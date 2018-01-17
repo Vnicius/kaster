@@ -8,16 +8,13 @@ import {
 import FontAwesome, { Icons } from 'react-native-fontawesome';
 
 export default class ToolbarSearch extends Component {
-  constructor() {
-		super();
-		this.state ={
-			text: ""
-    }
-    console.log(this.state)
-	}
 
-	press() {
-		console.log("Press");
+  constructor(props) {
+    super(props);
+  }
+
+  change(text) {
+    this.props.onChangeText(text)
   }
   
   render() {
@@ -31,9 +28,14 @@ export default class ToolbarSearch extends Component {
             underlineColorAndroid={"#adadeb"}
             selectionColor={"white"}
             placeholderTextColor={"#adadeb"}
-            onChangeText={(text) => this.setState({text})}
+            onChangeText={(text) => {
+              this.props.onChangeText(text);
+            }}
+            onSubmitEditing={() => {
+              this.props.onSubmit();
+            }}
             placeholder={"Search..."}
-            value={this.state.text}/>
+            value={this.props.value}/>
       </View>
     )
   }
