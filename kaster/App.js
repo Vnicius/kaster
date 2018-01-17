@@ -7,7 +7,6 @@ import {
 
 import MainScreen from './src/screens/MainScreen';
 import StatusBarBase from './src/components/StatusBarBase';
-import Toolbar from './src/components/Toolbar';
 
 export default class App extends React.Component {
   render() {
