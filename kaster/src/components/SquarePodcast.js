@@ -3,13 +3,18 @@ import {
   View,
   Dimensions,
   StyleSheet,
+  TouchableOpacity
 } from 'react-native';
 
 export default class SquarePodcast extends Component {
   render() {
     return (
-      <View style={styles.container}>
-			</View>
+      <TouchableOpacity onPress={() => {
+          this.props.onPress(this.props.podcast);
+        }}>
+        <View style={styles.container}>
+        </View>
+      </TouchableOpacity>
     )
   }
 };
