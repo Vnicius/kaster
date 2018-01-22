@@ -4,21 +4,26 @@ import {
   ScrollView,
   View,
   TextInput,
+  TouchableOpacity,
 } from 'react-native';
+
+import { StackNavigator } from 'react-navigation';
 
 import Toolbar from '../components/Toolbar';
 import ToolbarSearch from '../components/ToolbarSearch';
 import SquarePodcastsContainer from '../components/SquarePodcastsContainer';
+import PodcastDetailScreen from './PodcastDetailScreen';
 
 const data = {
   podcasts: [
     {
       id: 1,
-      name: "Nome"
+      name: "Nome1",
+      description: "Esse é um podcast top!"
     },
     {
       id: 2,
-      name: "Nome"
+      name: "Nome2"
     },
     {
       id: 3,
@@ -71,7 +76,7 @@ const data = {
   ]
 }
 
-export default class SearchScreen extends Component {
+export class SearchScreen extends Component {
   constructor() {
     super();
     this.state = {
@@ -80,10 +85,15 @@ export default class SearchScreen extends Component {
     }
   }
 
+  static navigationOptions = {
+    header: null
+  }
+
   fillBody() {
     return ( this.state.searching ? 
              <View /> :
-            <SquarePodcastsContainer podcasts={data.podcasts}/>);
+            <SquarePodcastsContainer podcasts={data.podcasts}
+                                     onPress={this.handlerPress.bind(this)}/>);
   }
 
   handlerChange(text) {
@@ -105,7 +115,12 @@ export default class SearchScreen extends Component {
     console.log("Enviado")
   }
 
+  handlerPress(podcastData) {
+    this.props.navigation.navigate('PodcastDetail', podcastData)
+  }
+
   render() {
+    const { navigate } = this.props.navigation;
     return (
       <View>
         <Toolbar content={<ToolbarSearch onChangeText={this.handlerChange.bind(this)}
@@ -116,3 +131,14 @@ export default class SearchScreen extends Component {
     )
   }
 };
+
+const searchStack = StackNavigator({
+    Home: {
+      screen: SearchScreen,
+    },
+    PodcastDetail: {
+      screen: PodcastDetailScreen,
+    }
+  });
+
+export default searchStack;
