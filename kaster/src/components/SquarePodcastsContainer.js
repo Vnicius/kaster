@@ -9,7 +9,9 @@ import SquarePodcast from './SquarePodcast';
 export default class componentName extends Component {
 	podcasts() {
     return this.props.podcasts.map((podcast) => {
-      return <SquarePodcast key={podcast.id} />
+      return <SquarePodcast key={podcast.id}
+														podcast={podcast}
+														onPress={this.props.onPress}/>
     });
 	}
 
