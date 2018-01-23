@@ -7,74 +7,13 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-import { StackNavigator } from 'react-navigation';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import Toolbar from '../components/Toolbar';
 import ToolbarSearch from '../components/ToolbarSearch';
 import SquarePodcastsContainer from '../components/SquarePodcastsContainer';
-import PodcastDetailScreen from './PodcastDetailScreen';
-
-const data = {
-  podcasts: [
-    {
-      id: 1,
-      name: "Nome1",
-      description: "Esse é um podcast top!"
-    },
-    {
-      id: 2,
-      name: "Nome2"
-    },
-    {
-      id: 3,
-      name: "Nome"
-    },
-    {
-      id: 4,
-      name: "Nome"
-    },
-    {
-      id: 5,
-      name: "Nome"
-    },
-    {
-      id: 6,
-      name: "Nome"
-    },
-    {
-      id: 7,
-      name: "Nome"
-    },
-    {
-      id: 8,
-      name: "Nome"
-    },
-    {
-      id: 9,
-      name: "Nome"
-    },
-    {
-      id: 10,
-      name: "Nome"
-    },
-    {
-      id: 11,
-      name: "Nome"
-    },
-    {
-      id: 12,
-      name: "Nome"
-    },
-    {
-      id: 13,
-      name: "Nome"
-    },
-    {
-      id: 14,
-      name: "Nome"
-    },
-  ]
-}
+import { fetchTop } from '../actions/searchActions';
 
 export class SearchScreen extends Component {
   constructor() {
@@ -90,9 +29,9 @@ export class SearchScreen extends Component {
   }
 
   fillBody() {
-    return ( this.state.searching ? 
+    return ( this.state.searching || !this.props.topFetched ? 
              <View /> :
-            <SquarePodcastsContainer podcasts={data.podcasts}
+            <SquarePodcastsContainer podcasts={this.props.top.feed.results}
                                      onPress={this.handlerPress.bind(this)}/>);
   }
 
@@ -121,6 +60,10 @@ export class SearchScreen extends Component {
 
   render() {
     const { navigate } = this.props.navigation;
+    if (!this.props.topFetched && !this.props.topError) {
+      this.props.fetchTop('br');
+    }
+
     return (
       <View>
         <Toolbar content={<ToolbarSearch onChangeText={this.handlerChange.bind(this)}
@@ -132,13 +75,18 @@ export class SearchScreen extends Component {
   }
 };
 
-const searchStack = StackNavigator({
-    Home: {
-      screen: SearchScreen,
-    },
-    PodcastDetail: {
-      screen: PodcastDetailScreen,
-    }
-  });
+function mapStatetoProps(state) {
+  return {
+    top: state.search.top,
+    topFetched: state.search.topFetched,
+    topError: state.search.topError,
+  };
+}
 
-export default searchStack;
+function mapDispatchtoProps(dispatch) {
+  return bindActionCreators({
+    fetchTop: fetchTop,
+  }, dispatch);
+}
+
+export default connect(mapStatetoProps, mapDispatchtoProps)(SearchScreen);
