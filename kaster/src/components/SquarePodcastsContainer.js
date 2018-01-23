@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
 	View,
 	ScrollView,
+	Text
 } from 'react-native';
 
 import SquarePodcast from './SquarePodcast';
@@ -15,9 +16,16 @@ export default class componentName extends Component {
     });
 	}
 
+	hasLabel() {
+		if(this.props.label) {
+			return <Text>{this.props.label}</Text>
+		}
+	}
+
   render() {
     return (
 			<ScrollView>
+				{this.hasLabel()}
 				<View style={{
 					flex: 1,
 					flexDirection: 'row',
