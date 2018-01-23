@@ -3,7 +3,7 @@ import React from 'react';
 import { TabNavigator } from 'react-navigation';
 import FontAwesome, { Icons } from 'react-native-fontawesome';
 
-import SearchScreen from './SearchScreen';
+import SearchScreenNavigator from '../navigatiors/SearchScreenNavigator';
 import PodcastsScreen from './PodcastsScreen';
 import ListeningScreen from './ListeningScreen';
 import ReleasesScreen from './ReleasesScreen';
@@ -11,7 +11,7 @@ import PlaylistsScreen from './PlaylistsScreen';
 
 const MainScreen = TabNavigator({
   Search: { 
-    screen: SearchScreen,
+    screen: SearchScreenNavigator,
     navigationOptions: {
       tabBarIcon: ({ tintColor, focused }) => (
         <FontAwesome 
