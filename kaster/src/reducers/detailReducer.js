@@ -1,0 +1,44 @@
+const initialState = {
+    currentPodcast: null,
+    fetchingPodcast: false,
+    fetchedPodcast: false,
+    fetchPodcastError: null,
+    feed: null,
+    fetchingFeed: false,
+    fetchedFeed: false,
+    fetchFeedError: null,
+}
+
+export default (state=initialState, action) => {
+    switch(action.type) {
+
+        case "FETCH_PODCAST_PENDING":
+            return {...state, fetchingPodcast: true};
+        
+        case "FETCH_PODCAST_FULFILLED":
+            return {...state,
+                    fetchingPodcast: false,
+                    fetchedPodcast: true,
+                    currentPodcast: action.payload.data.results[0]};
+        
+        case "FETCH_PODCAST_REJECTED":
+            return {...state, fetchingPodcast: false,
+                    fetchPodcastError: action.payload.data};
+        
+        case "FETCH_FEED_PENDING":
+            return {...state, fetchingFeed: true};
+
+        case "FETCH_FEED_FULFILLED":
+            // get(action.payload.data)
+            return {...state};
+
+        case "FETCH_FEED_REJECTED":
+            return {...state, fetchingFeed: false, fetchFeedError: action.payload.data};
+        
+        case "RESET":
+            return {...initialState};
+        
+        default:
+            return {...state};
+    }
+}
