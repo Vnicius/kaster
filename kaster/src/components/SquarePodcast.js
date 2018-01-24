@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     height: widthDim,
   },
   container: {
-    backgroundColor: "gray",
+    backgroundColor: "#512da8",
     margin: 1,
   }
 });
