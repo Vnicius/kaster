@@ -14,7 +14,9 @@ import { bindActionCreators } from 'redux';
 import Toolbar from '../components/Toolbar';
 import ToolbarSearch from '../components/ToolbarSearch';
 import SquarePodcastsContainer from '../components/SquarePodcastsContainer';
-import { fetchTop, fetchPodcast } from '../actions/searchActions';
+import WaitLoadong from '../components/WaitLoading';
+import { fetchTop } from '../actions/searchActions';
+import { reset } from '../actions/detailActions';
 
 export class SearchScreen extends Component {
   constructor() {
@@ -56,33 +58,24 @@ export class SearchScreen extends Component {
   }
 
   handlerSelectPodcast(podcastData) {
-    this.props.fetchPodcast(podcastData.id);
-    
-    if(this.props.fetchPodcastError){
-      alert(this.props.fetchPodcastError);
-    }else {
-      this.props.navigation.navigate('PodcastDetail', this.props.podcast)
-    }
+    this.props.reset();
+    this.props.navigation.navigate('PodcastDetail', podcastData);
   }
 
   showWaitLoader() {
     if(this.props.topFetching) {
       return (
-        <View style={{
-          flex: 1,
-          flexDirection: 'row',
-          justifyContent: 'center',
-          marginTop: 60,
-        }}>
-          <ActivityIndicator size="large" color="#512da8" />
-        </View>
+        <WaitLoadong style={{top: 60,}}/>
       );
     }
   }
 
   render() {
     const { navigate } = this.props.navigation;
-    if (!this.props.topFetched && !this.props.topError) {
+    if (!this.props.topFetching 
+        && !this.props.topFetched
+        && !this.props.topError) {
+      
       this.props.fetchTop('br');
     }
 
@@ -104,17 +97,13 @@ function mapStatetoProps(state) {
     topFetching: state.search.topFetching,
     topFetched: state.search.topFetched,
     topError: state.search.topError,
-    podcast: state.search.podcast,
-    fetchedPodcast: state.search.fetchedPodcast,
-    fetchingPodcast: state.search.fetchingPodcast,
-    fetchPodcastError: state.search.fetchPodcastError,
   };
 }
 
 function mapDispatchtoProps(dispatch) {
   return bindActionCreators({
     fetchTop: fetchTop,
-    fetchPodcast: fetchPodcast,
+    reset: reset,
   }, dispatch);
 }
 
