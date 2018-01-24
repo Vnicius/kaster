@@ -8,3 +8,10 @@ export function fetchTop(country) {
                            + '/podcasts/top-podcasts/all/25/explicit.json')
     }
 }
+
+export function fetchPodcast(id) {
+    return {
+        type: "FETCH_PODCAST",
+        payload: axios.get('https://itunes.apple.com/lookup?id=' + id)
+    }
+}
