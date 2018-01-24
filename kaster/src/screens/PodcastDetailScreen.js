@@ -1,21 +1,72 @@
 import React, { Component } from 'react';
 import {
+  View,
   Text,
   ScrollView,
+  Image,
 } from 'react-native';
 
-export default class PodcastDetailScreen extends Component {
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
+import WaitLoading from '../components/WaitLoading';
+import PodcastHeaderProfile from '../components/PodcastHeaderProfile';
+
+import { 
+  fetchPodcast,
+  fetchFeed,
+  fetchPodcastAndFeed,
+} from '../actions/detailActions';
+
+class PodcastDetailScreen extends Component {
   static navigationOptions = ({ navigation }) => ({
     title: navigation.state.params.name,
     tabBarVisible: false,
   });
 
   render() {
-		const { params } = this.props.navigation.state;
+    const { params } = this.props.navigation.state;
+
+    if(!this.props.fetchingPodcast
+       && !this.props.fetchedPodcast
+       && !this.props.fetchPodcastError) {
+      
+      this.props.fetchPodcastAndFeed(params.id);
+    }
+
     return (
       <ScrollView style={{elevation: 10}}>
-        <Text>{params.description}</Text>
+        {this.props.currentPodcast 
+          ? <PodcastHeaderProfile artworkUrl={this.props.currentPodcast.artworkUrl600}
+                                  name={this.props.currentPodcast.collectionName}
+                                  owner={this.props.currentPodcast.artistName}/>
+
+          : <WaitLoading style={{marginTop: 60,}} />
+        }
       </ScrollView>
     )
   }
 };
+
+function mapStateToProps(state) {
+  return {
+    currentPodcast: state.detail.currentPodcast,
+    fetchedPodcast: state.detail.fetchedPodcast,
+    fetchingPodcast: state.detail.fetchingPodcast,
+    fetchPodcastError: state.detail.fetchPodcastError,
+    feed: state.detail.feed,
+    fetchingFeed: state.detail.fetchingFeed,
+    fetchedFeed: state.detail.fetchFeed,
+    fetchFeedError: state.detail.fetchFeedError,
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({
+    fetchPodcast: fetchPodcast,
+    fetchFeed: fetchFeed,
+    fetchPodcastAndFeed: fetchPodcastAndFeed,
+  }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PodcastDetailScreen);
