@@ -5,6 +5,7 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -13,7 +14,7 @@ import { bindActionCreators } from 'redux';
 import Toolbar from '../components/Toolbar';
 import ToolbarSearch from '../components/ToolbarSearch';
 import SquarePodcastsContainer from '../components/SquarePodcastsContainer';
-import { fetchTop } from '../actions/searchActions';
+import { fetchTop, fetchPodcast } from '../actions/searchActions';
 
 export class SearchScreen extends Component {
   constructor() {
@@ -32,7 +33,7 @@ export class SearchScreen extends Component {
     return ( this.state.searching || !this.props.topFetched ? 
              <View /> :
             <SquarePodcastsContainer podcasts={this.props.top.feed.results}
-                                     onPress={this.handlerPress.bind(this)}/>);
+                                     onPress={this.handlerSelectPodcast.bind(this)}/>);
   }
 
   handlerChange(text) {
@@ -54,8 +55,29 @@ export class SearchScreen extends Component {
     console.log("Enviado")
   }
 
-  handlerPress(podcastData) {
-    this.props.navigation.navigate('PodcastDetail', podcastData)
+  handlerSelectPodcast(podcastData) {
+    this.props.fetchPodcast(podcastData.id);
+    
+    if(this.props.fetchPodcastError){
+      alert(this.props.fetchPodcastError);
+    }else {
+      this.props.navigation.navigate('PodcastDetail', this.props.podcast)
+    }
+  }
+
+  showWaitLoader() {
+    if(this.props.topFetching) {
+      return (
+        <View style={{
+          flex: 1,
+          flexDirection: 'row',
+          justifyContent: 'center',
+          marginTop: 60,
+        }}>
+          <ActivityIndicator size="large" color="#512da8" />
+        </View>
+      );
+    }
   }
 
   render() {
@@ -69,6 +91,7 @@ export class SearchScreen extends Component {
         <Toolbar content={<ToolbarSearch onChangeText={this.handlerChange.bind(this)}
                                          onSubmit={this.handlerSubmit.bind(this)}
                                          value={this.state.text}/>}/>
+        {this.showWaitLoader()}
         {this.fillBody()}
       </View>
     )
@@ -78,14 +101,20 @@ export class SearchScreen extends Component {
 function mapStatetoProps(state) {
   return {
     top: state.search.top,
+    topFetching: state.search.topFetching,
     topFetched: state.search.topFetched,
     topError: state.search.topError,
+    podcast: state.search.podcast,
+    fetchedPodcast: state.search.fetchedPodcast,
+    fetchingPodcast: state.search.fetchingPodcast,
+    fetchPodcastError: state.search.fetchPodcastError,
   };
 }
 
 function mapDispatchtoProps(dispatch) {
   return bindActionCreators({
     fetchTop: fetchTop,
+    fetchPodcast: fetchPodcast,
   }, dispatch);
 }
 
