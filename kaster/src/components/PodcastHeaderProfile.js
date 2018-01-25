@@ -14,15 +14,15 @@ export default class PodcastHeaderProfile extends Component {
     return (
 			<View>
 			{/* <View style={styles.headerBackground}/> */}
-      <View style={styles.profileContainer}>
-				<Image source={{uri: this.props.artworkUrl}}
-							 style={styles.profileImage}/>
-				
-				<Text style={styles.nameText}>
-					{this.props.name}
-				</Text>
-				<Text style={styles.ownerText}>{this.props.owner}</Text>
-      </View>
+				<View style={styles.profileContainer}>
+					<Image source={{uri: this.props.artworkUrl}}
+								style={styles.profileImage}/>
+					
+					<Text style={styles.nameText}>
+						{this.props.name}
+					</Text>
+					<Text style={styles.ownerText}>{this.props.owner}</Text>
+				</View>
 			</View>
     )
   }
