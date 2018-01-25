@@ -11,6 +11,7 @@ import { bindActionCreators } from 'redux';
 
 import WaitLoading from '../components/WaitLoading';
 import PodcastHeaderProfile from '../components/PodcastHeaderProfile';
+import PodcastBodyProfile from '../components/PodcastBodyProfile';
 
 import { 
   fetchPodcast,
@@ -33,16 +34,22 @@ class PodcastDetailScreen extends Component {
       
       this.props.fetchPodcastAndFeed(params.id);
     }
-
     return (
-      <ScrollView style={{elevation: 10}}>
-        {this.props.currentPodcast 
+      <ScrollView style={{elevation: 10, backgroundColor: '#f2f2f2'}}>
+        {
+          this.props.currentPodcast 
           ? <PodcastHeaderProfile artworkUrl={this.props.currentPodcast.artworkUrl600}
                                   name={this.props.currentPodcast.collectionName}
                                   owner={this.props.currentPodcast.artistName}/>
 
           : <WaitLoading style={{marginTop: 60,}} />
         }
+        {
+          this.props.feed
+          ? <PodcastBodyProfile {...this.props.feed} />
+          : <WaitLoading style={{marginTop: 20,}} />
+        }
+        
       </ScrollView>
     )
   }
