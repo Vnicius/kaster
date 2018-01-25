@@ -1,3 +1,5 @@
+import { xml2json } from '../functions/xmlHelpers';
+
 const initialState = {
     currentPodcast: null,
     fetchingPodcast: false,
@@ -29,8 +31,7 @@ export default (state=initialState, action) => {
             return {...state, fetchingFeed: true};
 
         case "FETCH_FEED_FULFILLED":
-            // get(action.payload.data)
-            return {...state};
+            return {...state, feed: xml2json(action.payload.data)};
 
         case "FETCH_FEED_REJECTED":
             return {...state, fetchingFeed: false, fetchFeedError: action.payload.data};
