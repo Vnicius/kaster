@@ -6,6 +6,8 @@ import {
 	Image,
 } from 'react-native';
 
+import HTML from 'react-native-render-html';
+
 import WaitLoading from './WaitLoading';
 
 export default class PodcastBodyProfile extends Component {
@@ -17,12 +19,14 @@ export default class PodcastBodyProfile extends Component {
 					Description
 				</Text>
 				<Text style={styles.text}>
-					{this.props.description}
+					{this.props.description[0]}
 				</Text>
 				<Text style={styles.title}>
 					Latest Episode
 				</Text>
 				<View style={styles.episode}>
+					<Text style={styles.text}>{this.props.item[0].pubDate[0]
+											 .replace(new RegExp(" [\+-][0-9]{4}"),"")}</Text>
 					{this.props.item[0].image
 						? <Image source={{uri: this.props.item[0].image[0].$.href}} 
 								 style={{
@@ -30,10 +34,19 @@ export default class PodcastBodyProfile extends Component {
 									 width: 150,
 									 borderRadius: 20,
 								 }}/>
-						: <View/>
+						: <Image source={{uri: this.props.image[0].$.href}} 
+								 style={{
+									 height: 150,
+									 width: 150,
+									 borderRadius: 20,
+								 }}/>
 					}
 					<Text style={[styles.title, {textAlign: 'center'}]}>{this.props.item[0].title}</Text>
-					<Text style={styles.text}>{this.props.item[0].description}</Text>
+					{	this.props.item[0].description
+						? <HTML html={this.props.item[0].description[0]
+													.replace(new RegExp('\r\n|\n|\r', 'g'),'</br>')}/>
+						: <View/>
+					}
 				</View>
 			</View>
     )
@@ -45,14 +58,16 @@ const styles = StyleSheet.create({
 		flex: 1,
 		flexDirection: 'column',
 		paddingHorizontal: 15,
+		marginBottom: 10,
 	},
 	title: {
 		fontWeight: 'bold',
 		fontSize: 18,
-		marginTop: 10,
+		marginTop: 15,
 	},
 	text: {
 		fontSize: 15,
+		marginVertical: 8,
 	},
 	episode: {
 		flex: 1,
