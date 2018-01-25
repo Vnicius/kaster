@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'column',
 		justifyContent: 'center',
 		alignItems: 'center',
-		marginTop: 30,
+		marginTop: 10,
 		elevation: 2,
 		paddingHorizontal: 5,
 	},
@@ -48,6 +48,7 @@ const styles = StyleSheet.create({
 		height: 150,
 		width: 150,
 		borderRadius: 100,
+		marginVertical: 10,
 	},
 	nameText: {
 		fontWeight: 'bold',
