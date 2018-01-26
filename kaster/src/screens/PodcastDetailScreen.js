@@ -25,6 +25,16 @@ class PodcastDetailScreen extends Component {
     tabBarVisible: false,
   });
 
+  errorsAlert() {
+    if(this.props.fetchPodcastError) {
+      alert("Error to get the podcast's data!");
+    }
+    
+    if(this.props.fetchFeedError) {
+      alert("Error to get the podcast's feed data!");
+    }
+  }
+
   render() {
     const { params } = this.props.navigation.state;
 
@@ -36,6 +46,7 @@ class PodcastDetailScreen extends Component {
     }
     return (
       <ScrollView style={{elevation: 10, backgroundColor: '#f2f2f2'}}>
+        {this.errorsAlert()}
         {
           this.props.currentPodcast 
           ? <PodcastHeaderProfile artworkUrl={this.props.currentPodcast.artworkUrl600}
