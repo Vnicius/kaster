@@ -15,14 +15,13 @@ import Toolbar from '../components/Toolbar';
 import ToolbarSearch from '../components/ToolbarSearch';
 import SquarePodcastsContainer from '../components/SquarePodcastsContainer';
 import WaitLoadong from '../components/WaitLoading';
-import { fetchTop } from '../actions/searchActions';
+import { fetchTop, searchPodcast, resetSearch } from '../actions/searchActions';
 import { reset } from '../actions/detailActions';
 
 export class SearchScreen extends Component {
-  constructor() {
+  constructor(){
     super();
     this.state = {
-      searching: false,
       text: "",
     }
   }
@@ -31,42 +30,61 @@ export class SearchScreen extends Component {
     header: null
   }
 
-  fillBody() {
-    return ( this.state.searching || !this.props.topFetched ? 
-             <View /> :
-            <SquarePodcastsContainer podcasts={this.props.top.feed.results}
-                                     onPress={this.handlerSelectPodcast.bind(this)}/>);
-  }
+  handlerChange(term) {
+    this.setState({
+      text: term,
+    });
 
-  handlerChange(text) {
-    if (text === "" ){
-      this.setState({
-        text: text,
-        searching: false
-      });
-    } else {
-      this.setState({
-        text: text,
-        searching: true
-      });
+    if (term === "" ){
+      this.props.resetSearch();
+      return;
     }
-    
+
+    this.props.searchPodcast(term);
   }
 
   handlerSubmit() {
-    console.log("Enviado")
+    if(this.state.text !== ""
+       && !this.props.podcasts) {
+      this.props.searchPodcast(this.state.text);
+    } else if (this.state.text === "") {
+      this.props.resetSearch();
+    }
   }
 
   handlerSelectPodcast(podcastData) {
+    var podcast = {};
+    podcast.id = podcastData.id ? podcastData.id : podcastData.trackId;
+    podcast.name = podcastData.name ? podcastData.name : podcastData.collectionName;
+
     this.props.reset();
-    this.props.navigation.navigate('PodcastDetail', podcastData);
+    this.props.navigation.navigate('PodcastDetail', podcast);
+  }
+
+  fillBody() {
+    if(this.props.searchedPodcast
+       && !this.props.searchingPodcast
+       && this.state.text !== "") {
+      return <SquarePodcastsContainer podcasts={this.props.podcasts}
+                                      onPress={this.handlerSelectPodcast.bind(this)}/>
+    } else if(this.props.topFetched
+              && !this.props.searchingPodcast) {
+      return <SquarePodcastsContainer podcasts={this.props.top.feed.results}
+                                      onPress={this.handlerSelectPodcast.bind(this)}/>
+    }
   }
 
   showWaitLoader() {
-    if(this.props.topFetching) {
+    if(this.props.topFetching || this.props.searchingPodcast) {
       return (
         <WaitLoadong style={{top: 60,}}/>
       );
+    }
+  }
+
+  errorsAlert() {
+    if(this.props.topError) {
+      alert("Error to get the top podcast of the country!")
     }
   }
 
@@ -84,6 +102,7 @@ export class SearchScreen extends Component {
         <Toolbar content={<ToolbarSearch onChangeText={this.handlerChange.bind(this)}
                                          onSubmit={this.handlerSubmit.bind(this)}
                                          value={this.state.text}/>}/>
+        {this.errorsAlert()}
         {this.showWaitLoader()}
         {this.fillBody()}
       </View>
@@ -97,12 +116,18 @@ function mapStatetoProps(state) {
     topFetching: state.search.topFetching,
     topFetched: state.search.topFetched,
     topError: state.search.topError,
+    podcasts: state.search.podcasts,
+    searchingPodcast: state.search.searchingPodcast,
+    searchedPodcast: state.search.searchedPodcast,
+    searchPodcastError: state.search.searchPodcastError,
   };
 }
 
 function mapDispatchtoProps(dispatch) {
   return bindActionCreators({
     fetchTop: fetchTop,
+    searchPodcast: searchPodcast,
+    resetSearch: resetSearch,
     reset: reset,
   }, dispatch);
 }
