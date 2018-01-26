@@ -47,10 +47,15 @@ export default class PodcastBodyProfile extends Component {
 					</Text>
 
 					{	this.props.item[0].description
-						? <HTML html={this.props.item[0].description[0]
-													.replace(new RegExp('\r\n|\n|\r', 'g'),'</br>')}/>
-						: <HTML html={this.props.item[0].subtitle[0]
-													.replace(new RegExp('\r\n|\n|\r', 'g'),'</br>')}/>
+						? <HTML html={'<html>'
+													+ this.props.item[0].description[0]
+															.replace(new RegExp('\r\n|\n|\r', 'g'),'</br>')
+													+ '</html>'}/>
+
+						: <HTML html={'<html>'
+													+ this.props.item[0].subtitle[0]
+															.replace(new RegExp('\r\n|\n|\r', 'g'),'</br>')
+													+ '</html>'}/>
 					}
 				</View>
 			</View>
