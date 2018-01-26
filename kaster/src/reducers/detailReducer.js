@@ -34,7 +34,7 @@ export default (state=initialState, action) => {
             return {...state, feed: xml2json(action.payload.data)};
 
         case "FETCH_FEED_REJECTED":
-            return {...state, fetchingFeed: false, fetchFeedError: action.payload.data};
+            return {...state, fetchingFeed: false, fetchFeedError: action.payload};
         
         case "RESET":
             return {...initialState};
