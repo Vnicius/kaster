@@ -3,7 +3,10 @@ const initialState = {
     topFetching: false,
     topFetched: false,
     topError: null,
-    podcast: null,
+    podcasts: null,
+    searchingPodcast: false,
+    searchedPodcast: false,
+    searchPodcastError: null,
 }
 
 export default function(state=initialState, action) {
@@ -19,6 +22,27 @@ export default function(state=initialState, action) {
 
         case "TOP_REJECTED":
             return {...state, topFetching: false, topError: action.payload};
+        
+        case "SEARCH_PENDING":
+            return {...state, searchingPodcast: true};
+
+        case "SEARCH_FULFILLED":
+            return {...state,
+                    searchingPodcast: false,
+                    searchedPodcast: true,
+                    podcasts: action.payload.data.results};
+
+        case "SEARCH_REJECTED":
+            return {...state,
+                    searchingPodcast: false,
+                    searchPodcastError: action.payload.data};
+        
+        case "RESET_SEARCH":
+            return {...state,
+                    podcasts: null,
+                    searchingPodcast: false,
+                    searchedPodcast: false,
+                    searchPodcastError: null};
         
         default:
             return {...state};
