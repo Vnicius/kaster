@@ -8,3 +8,18 @@ export function fetchTop(country) {
                            + '/podcasts/top-podcasts/all/25/explicit.json')
     }
 }
+
+export function searchPodcast(term) {
+    return {
+        type: "SEARCH",
+        payload: axios.get('https://itunes.apple.com/search?term='
+                           + encodeURI(term)
+                           + '&entity=podcast')
+    }
+}
+
+export function resetSearch() {
+    return {
+        type: "RESET_SEARCH",
+    }
+}
