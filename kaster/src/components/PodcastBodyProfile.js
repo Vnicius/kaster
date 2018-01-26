@@ -25,7 +25,7 @@ export default class PodcastBodyProfile extends Component {
 				</Text>
 				<View style={styles.episode}>
 					{<Text style={styles.text}>{this.props.item[0].pubDate[0]
-											 .replace(new RegExp(" [\+-][0-9]{4}"),"")}
+											 .replace(new RegExp(".* ([0-9]{1,2} [a-zA-Z]+ [0-9]{4}) .*"),"$1")}
 					</Text>}
 					{this.props.item[0].image
 						? <Image source={{uri: this.props.item[0].image[0].$.href}} 
@@ -79,6 +79,6 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		flexDirection: 'column',
 		alignItems: 'center',
-		marginTop: 10,
+		marginTop: 2,
 	}
 });
