@@ -13,20 +13,20 @@ import WaitLoading from './WaitLoading';
 export default class PodcastBodyProfile extends Component {
   render() {
     return (
-
 			<View style={styles.container}>
 				<Text style={styles.title}>
 					Description
 				</Text>
 				<Text style={styles.text}>
-					{this.props.description[0]}
+					{this.props.description}
 				</Text>
 				<Text style={styles.title}>
 					Latest Episode
 				</Text>
 				<View style={styles.episode}>
-					<Text style={styles.text}>{this.props.item[0].pubDate[0]
-											 .replace(new RegExp(" [\+-][0-9]{4}"),"")}</Text>
+					{<Text style={styles.text}>{this.props.item[0].pubDate[0]
+											 .replace(new RegExp(" [\+-][0-9]{4}"),"")}
+					</Text>}
 					{this.props.item[0].image
 						? <Image source={{uri: this.props.item[0].image[0].$.href}} 
 								 style={{
@@ -41,11 +41,16 @@ export default class PodcastBodyProfile extends Component {
 									 borderRadius: 20,
 								 }}/>
 					}
-					<Text style={[styles.title, {textAlign: 'center'}]}>{this.props.item[0].title}</Text>
+
+					<Text style={[styles.title, {textAlign: 'center'}]}>
+						{this.props.item[0].title[0]}
+					</Text>
+
 					{	this.props.item[0].description
 						? <HTML html={this.props.item[0].description[0]
 													.replace(new RegExp('\r\n|\n|\r', 'g'),'</br>')}/>
-						: <View/>
+						: <HTML html={this.props.item[0].subtitle[0]
+													.replace(new RegExp('\r\n|\n|\r', 'g'),'</br>')}/>
 					}
 				</View>
 			</View>
