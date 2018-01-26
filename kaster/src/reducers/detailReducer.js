@@ -24,6 +24,7 @@ export default (state=initialState, action) => {
                     currentPodcast: action.payload.data.results[0]};
         
         case "FETCH_PODCAST_REJECTED":
+        case "FETCH_PODCAST_ERROR":
             return {...state, fetchingPodcast: false,
                     fetchPodcastError: action.payload.data};
         
@@ -34,6 +35,7 @@ export default (state=initialState, action) => {
             return {...state, feed: xml2json(action.payload.data)};
 
         case "FETCH_FEED_REJECTED":
+        case "FETCH_FEED_ERROR":
             return {...state, fetchingFeed: false, fetchFeedError: action.payload};
         
         case "RESET":
