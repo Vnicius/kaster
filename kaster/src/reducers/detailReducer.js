@@ -1,5 +1,3 @@
-import { xml2json } from '../functions/xmlHelpers';
-
 const initialState = {
     currentPodcast: null,
     fetchingPodcast: false,
@@ -21,18 +19,18 @@ export default (state=initialState, action) => {
             return {...state,
                     fetchingPodcast: false,
                     fetchedPodcast: true,
-                    currentPodcast: action.payload.data.results[0]};
+                    currentPodcast: action.payload};
         
         case "FETCH_PODCAST_REJECTED":
         case "FETCH_PODCAST_ERROR":
             return {...state, fetchingPodcast: false,
-                    fetchPodcastError: action.payload.data};
+                    fetchPodcastError: action.payload};
         
         case "FETCH_FEED_PENDING":
             return {...state, fetchingFeed: true};
 
         case "FETCH_FEED_FULFILLED":
-            return {...state, feed: xml2json(action.payload.data)};
+            return {...state, feed: action.payload};
 
         case "FETCH_FEED_REJECTED":
         case "FETCH_FEED_ERROR":
