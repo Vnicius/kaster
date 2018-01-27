@@ -8,7 +8,6 @@ export function xml2json(xml) {
             console.log(err);
         } else {
             returnObj = result.rss.channel[0];
-            removeMetaKeys(returnObj);
         }
     });
 
@@ -21,9 +20,6 @@ export function removeMetaKeys(json) {
     var keys = Object.keys(json);
 
     keys.forEach((value) => {
-        if(value === "item") {
-            json.item = [json.item[0]]  // get only de last episode
-        }
 
         // Remove the 'itunes:' reference from the keys
         if(value.search('itunes:') >= 0) {
