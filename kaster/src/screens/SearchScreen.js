@@ -94,7 +94,8 @@ export class SearchScreen extends Component {
         && !this.props.topFetched
         && !this.props.topError) {
       
-      this.props.fetchTop('br');
+      
+      this.props.fetchTop();
     }
 
     return (

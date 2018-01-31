@@ -18,7 +18,7 @@ export default function(state=initialState, action) {
             return {...state, 
                     topFetching: false,
                     topFetched: true,
-                    top: action.payload.data};
+                    top: action.payload};
 
         case "TOP_REJECTED":
             return {...state, topFetching: false, topError: action.payload};

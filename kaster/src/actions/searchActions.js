@@ -1,11 +1,25 @@
 import axios from 'axios';
 
-export function fetchTop(country) {
-    return {
-        type: "TOP",
-        payload: axios.get('https://rss.itunes.apple.com/api/v1/'
-                           + country
+export function fetchTop() {
+    return (dispatch) => {
+        axios.get('https://freegeoip.net/json/')
+            .then(response => {
+                dispatch({type: "TOP_PENDING"});
+
+                axios.get('https://rss.itunes.apple.com/api/v1/'
+                           + response.data.country_code.toLowerCase()
                            + '/podcasts/top-podcasts/all/25/explicit.json')
+                    .then(response => {
+                        dispatch({type: "TOP_FULFILLED", payload: response.data});
+
+                    })
+                    .catch(err => {
+                        dispatch({type: "TOP_REJECTED", payload: err});
+                    })
+            })
+            .catch(err => {
+                alert(err);
+            })
     }
 }
 

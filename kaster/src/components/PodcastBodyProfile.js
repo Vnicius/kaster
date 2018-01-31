@@ -6,7 +6,7 @@ import {
 	Image,
 } from 'react-native';
 
-import HTML from 'react-native-render-html';
+import HTMLView from 'react-native-htmlview';
 
 import WaitLoading from './WaitLoading';
 
@@ -47,12 +47,12 @@ export default class PodcastBodyProfile extends Component {
 					</Text>
 
 					{	this.props.item[0].description
-						? <HTML html={'<html>'
+						? <HTMLView value={'<html>'
 													+ this.props.item[0].description[0]
 															.replace(new RegExp('\r\n|\n|\r', 'g'),'</br>')
 													+ '</html>'}/>
 
-						: <HTML html={'<html>'
+						: <HTMLView value={'<html>'
 													+ this.props.item[0].subtitle[0]
 															.replace(new RegExp('\r\n|\n|\r', 'g'),'</br>')
 													+ '</html>'}/>
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
 	title: {
 		fontWeight: 'bold',
 		fontSize: 18,
-		marginTop: 15,
+		marginVertical: 15,
 	},
 	text: {
 		fontSize: 15,
