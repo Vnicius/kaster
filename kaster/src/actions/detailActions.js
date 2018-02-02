@@ -50,8 +50,7 @@ export function fetchPodcastAndFeed(id) {
                         // update the podcast data
                         responsePodcast.signed = podcastLocal.signed;
 
-                        updateData("@Podcasts:" + id,
-                                    JSON.stringify(responsePodcast));
+                        updateData("@Podcasts:" + id, responsePodcast);
                         
                         // get the actual feed
                         dispatchFetchFeed(dispatch,
@@ -105,23 +104,30 @@ export function signPodcast(id) {
     return async (dispatch) => {
         dispatch({type: 'SIGN'});
 
+        // get the signeds podcasts from the storage
         var signedPodcasts = await AsyncStorage.getItem('@SignedPodcasts');
-
+        
         if(signedPodcasts) {
+            // add the new podcast id
             signedPodcasts = JSON.parse(signedPodcasts);
             signedPodcasts.podcasts.push(id);
 
-            updateData('@SignedPodcasts',
-                        JSON.stringify(signedPodcasts));
+            // update the storage
+            updateData('@SignedPodcasts', signedPodcasts);
+        } else {
+            // create a storage to the signeds podcast
+            await AsyncStorage.setItem('@SignedPodcasts',
+                                        JSON.stringify({podcasts:[id]}))
         }
 
+        // get the podcast signed and up the 'signed' field
         var podcastData = await AsyncStorage.getItem('@Podcasts:' + id);
         podcastData = JSON.parse(podcastData);
         podcastData.signed = true;
 
-        updateData('@Podcasts:' + id,
-                    JSON.stringify(podcastData));
+        updateData('@Podcasts:' + id, podcastData);
 
+        // download the feed and save in the storage
         dispatchFetchFeed(dispatch,
                         podcastData.feedUrl,
                         id,
