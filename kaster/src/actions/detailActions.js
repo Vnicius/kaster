@@ -18,9 +18,6 @@ export function fetchPodcastAndFeed(id) {
             .then(async (response) => {
                 // get the response data
                 var responsePodcast = response.data.results[0];
-                
-                dispatch({type: "FETCH_PODCAST_FULFILLED",
-                          payload: responsePodcast});
 
                 // get the podcast from the storage
                 var podcastLocal = await AsyncStorage.getItem("@Podcasts:" + id);
@@ -42,26 +39,45 @@ export function fetchPodcastAndFeed(id) {
                                       payload: feedLocal});
                         } else {
                             // get the feed
-                            dispatchFetchFeed(dispatch, podcastLocal.feedUrl, id);
+                            dispatchFetchFeed(dispatch,
+                                            responsePodcast.feedUrl,
+                                            id,
+                                            "@FeedMinimum:",
+                                            feedFilterMinimum);
                         }
     
                     } else {
                         // update the podcast data
-                        await AsyncStorage.removeItem("@Podcasts:" + id);
-                        await AsyncStorage.setItem("@Podcasts:" + id,
-                                                    JSON.stringify(responsePodcast));
+                        responsePodcast.signed = podcastLocal.signed;
+
+                        updateData("@Podcasts:" + id,
+                                    JSON.stringify(responsePodcast));
                         
                         // get the actual feed
-                        dispatchFetchFeed(dispatch, podcastLocal.feedUrl, id);
+                        dispatchFetchFeed(dispatch,
+                                        responsePodcast.feedUrl,
+                                        id,
+                                        "@FeedMinimum:",
+                                        feedFilterMinimum);
                     }
 
                 } else {
                     // save the podcast in the storage
+                    responsePodcast.signed = false;
+                    podcastLocal = responsePodcast;
+
                     await AsyncStorage.setItem("@Podcasts:" + id,
                                                 JSON.stringify(responsePodcast));
 
-                    dispatchFetchFeed(dispatch, responsePodcast.feedUrl, id);
+                    dispatchFetchFeed(dispatch,
+                                      responsePodcast.feedUrl,
+                                      id,
+                                      "@FeedMinimum:",
+                                      feedFilterMinimum);
                 }
+
+                dispatch({type: "FETCH_PODCAST_FULFILLED",
+                          payload: podcastLocal});
 
             })
             .catch((error) => {
@@ -69,30 +85,6 @@ export function fetchPodcastAndFeed(id) {
                           payload: error});
             })
     }
-}
-
-function dispatchFetchFeed(dispatch, feedUrl, id) {
-    dispatch({type: "FETCH_FEED_PENDING"});
-
-    axios.get(feedUrl)
-        .then(async (response) => {
-            // get the response xml and make a parse
-            var feed = xml2json(response.data);
-            feed.item = [feed.item[0]]
-            removeMetaKeys(feed);
-
-            dispatch({type: "FETCH_FEED_FULFILLED",
-                        payload: feed});
-            
-            // save the feed in the local storage
-            await AsyncStorage.setItem("@FeedMinimum:" + id,
-                                        JSON.stringify(feed));
-            
-        })
-        .catch((error) => {
-            dispatch({type: "FETCH_FEED_ERROR",
-                        payload: error});
-        })
 }
 
 export function fetchFeed(feedUrl) {
@@ -107,4 +99,74 @@ export function reset() {
     return {
         type: "RESET"
     }
+}
+
+export function signPodcast(id) {
+    return async (dispatch) => {
+        dispatch({type: 'SIGN'});
+
+        var signedPodcasts = await AsyncStorage.getItem('@SignedPodcasts');
+
+        if(signedPodcasts) {
+            signedPodcasts = JSON.parse(signedPodcasts);
+            signedPodcasts.podcasts.push(id);
+
+            updateData('@SignedPodcasts',
+                        JSON.stringify(signedPodcasts));
+        }
+
+        var podcastData = await AsyncStorage.getItem('@Podcasts:' + id);
+        podcastData = JSON.parse(podcastData);
+        podcastData.signed = true;
+
+        updateData('@Podcasts:' + id,
+                    JSON.stringify(podcastData));
+
+        dispatchFetchFeed(dispatch,
+                        podcastData.feedUrl,
+                        id,
+                        '@SignedFeeds:',
+                        feedFilterMinimum);
+        
+    }
+}
+
+export function unsignPodcast(id) {
+
+}
+
+function dispatchFetchFeed(dispatch, feedUrl, id, storage, filter) {
+    dispatch({type: "FETCH_FEED_PENDING"});
+
+    axios.get(feedUrl)
+        .then(async (response) => {
+            // get the response xml and make a parse
+            var feed = xml2json(response.data);
+
+            if(filter){
+                filter(feed);
+            }
+
+            dispatch({type: "FETCH_FEED_FULFILLED",
+                        payload: feed});
+            
+            // save the feed in the local storage
+            await AsyncStorage.setItem(storage + id,
+                                        JSON.stringify(feed));
+            
+        })
+        .catch((error) => {
+            dispatch({type: "FETCH_FEED_ERROR",
+                        payload: error});
+        })
+}
+
+function feedFilterMinimum(feed) {
+    feed.item = [feed.item[0]];
+    removeMetaKeys(feed);
+}
+
+async function updateData(id, data) {
+    await AsyncStorage.removeItem(id);
+    await AsyncStorage.setItem(id, JSON.stringify(data));
 }
