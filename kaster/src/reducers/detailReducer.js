@@ -45,6 +45,12 @@ export default (state=initialState, action) => {
 
             return {...state, currentPodcast: {...currentPodcast}}
         
+        case "UNSIGN":
+            var currentPodcast = {...state.currentPodcast};
+            currentPodcast.signed = false;
+
+            return {...state, currentPodcast: {...currentPodcast}}
+        
         default:
             return {...state};
     }
