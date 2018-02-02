@@ -20,6 +20,7 @@ import {
   fetchFeed,
   fetchPodcastAndFeed,
   signPodcast,
+  unsignPodcast,
 } from '../actions/detailActions';
 
 class PodcastDetailScreen extends Component {
@@ -54,6 +55,10 @@ class PodcastDetailScreen extends Component {
     this.props.signPodcast(this.props.currentPodcast.collectionId);
   }
 
+  unsignPodcast() {
+    this.props.unsignPodcast(this.props.currentPodcast.collectionId);
+  }
+
   render() {
     const { params } = this.props.navigation.state;
 
@@ -83,7 +88,7 @@ class PodcastDetailScreen extends Component {
           (<TouchableOpacity 
                 onPress={ 
                           this.props.currentPodcast.signed
-                          ? () => {console.log("TAP")}
+                          ? this.unsignPodcast.bind(this)
                           : this.signPodcast.bind(this)
                         }
                 style={{position: 'absolute',
@@ -140,6 +145,7 @@ function mapDispatchToProps(dispatch) {
     fetchFeed: fetchFeed,
     fetchPodcastAndFeed: fetchPodcastAndFeed,
     signPodcast: signPodcast,
+    unsignPodcast: unsignPodcast,
   }, dispatch);
 }
 
