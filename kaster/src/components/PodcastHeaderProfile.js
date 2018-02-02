@@ -12,7 +12,7 @@ const { width } = Dimensions.get('window')
 export default class PodcastHeaderProfile extends Component {
   render() {
     return (
-			<View>
+			<View style={{backgroundColor: '#512da8'}}>
 			{/* <View style={styles.headerBackground}/> */}
 				<View style={styles.profileContainer}>
 					<Image source={{uri: this.props.artworkUrl}}
@@ -54,9 +54,12 @@ const styles = StyleSheet.create({
 		fontWeight: 'bold',
 		fontSize: 20,
 		textAlign: 'center',
+		color: 'white',
 	},
 	ownerText: {
 		textAlign: 'center',
+		color: 'white',
+		marginBottom: 35,
 	}
 	
 })
