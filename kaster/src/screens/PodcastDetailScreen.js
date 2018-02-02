@@ -4,6 +4,7 @@ import {
   Text,
   ScrollView,
   Image,
+  TouchableOpacity,
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -12,14 +13,24 @@ import { bindActionCreators } from 'redux';
 import WaitLoading from '../components/WaitLoading';
 import PodcastHeaderProfile from '../components/PodcastHeaderProfile';
 import PodcastBodyProfile from '../components/PodcastBodyProfile';
+import FontAwesome, { Icons } from 'react-native-fontawesome';
 
 import { 
   fetchPodcast,
   fetchFeed,
   fetchPodcastAndFeed,
+  signPodcast,
 } from '../actions/detailActions';
 
 class PodcastDetailScreen extends Component {
+
+  constructor() {
+    super();
+    this.state = {
+      height: 0,
+    }
+  }
+
   static navigationOptions = ({ navigation }) => ({
     title: navigation.state.params.name,
     tabBarVisible: false,
@@ -35,6 +46,14 @@ class PodcastDetailScreen extends Component {
     }
   }
 
+  getHeight(event) {
+    this.setState({height: event.nativeEvent.layout.height});
+  }
+
+  signPodcast() {
+    this.props.signPodcast(this.props.currentPodcast.collectionId);
+  }
+
   render() {
     const { params } = this.props.navigation.state;
 
@@ -47,14 +66,50 @@ class PodcastDetailScreen extends Component {
     return (
       <ScrollView style={{elevation: 10, backgroundColor: '#f2f2f2'}}>
         {this.errorsAlert()}
+        <View onLayout={this.getHeight.bind(this)}>
         {
           this.props.currentPodcast 
           ? <PodcastHeaderProfile artworkUrl={this.props.currentPodcast.artworkUrl600}
                                   name={this.props.currentPodcast.collectionName}
-                                  owner={this.props.currentPodcast.artistName}/>
-
+                                  owner={this.props.currentPodcast.artistName}
+                                  onLayout={this.layout}/>
           : <WaitLoading style={{marginTop: 60,}} />
         }
+        </View>
+        { 
+          this.props.currentPodcast
+
+          && 
+          (<TouchableOpacity 
+                onPress={ 
+                          this.props.currentPodcast.signed
+                          ? () => {console.log("TAP")}
+                          : this.signPodcast.bind(this)
+                        }
+                style={{position: 'absolute',
+                        right: 10,
+                        top: Math.floor(this.state.height - 30)}}>
+            <View
+                style={{width: 60,  
+                        height: 60,   
+                        borderRadius: 30,            
+                        backgroundColor: this.props.currentPodcast.signed ? '#ef5350' : '#9ccc65',
+                        flex: 1,
+                        justifyContent: 'center',
+                        alignItems: 'center'                                    
+                        }}
+            >
+              <FontAwesome style={{fontSize: 25, color: 'white'}}>
+                { 
+                  this.props.currentPodcast.signed
+                  ? Icons.times
+                  : Icons.check
+                }
+              </FontAwesome>
+            </View>
+            </TouchableOpacity>)
+        }
+        
         {
           this.props.feed
           ? <PodcastBodyProfile {...this.props.feed} />
@@ -84,6 +139,7 @@ function mapDispatchToProps(dispatch) {
     fetchPodcast: fetchPodcast,
     fetchFeed: fetchFeed,
     fetchPodcastAndFeed: fetchPodcastAndFeed,
+    signPodcast: signPodcast,
   }, dispatch);
 }
 
