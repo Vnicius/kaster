@@ -138,7 +138,28 @@ export function signPodcast(id) {
 }
 
 export function unsignPodcast(id) {
+    return async (dispatch) => {
+        dispatch({type: 'UNSIGN'});
 
+        // remove the id from the list of signed podcasts
+        var signedPodcasts = await AsyncStorage.getItem('@SignedPodcasts');
+        signedPodcasts = JSON.parse(signedPodcasts);
+        signedPodcasts.podcasts.splice(signedPodcasts.podcasts.indexOf(id), 1);
+
+        // update the storage
+        updateData('@SignedPodcasts', signedPodcasts);
+        
+        // delete the feed from the storage
+        await AsyncStorage.removeItem('@SignedFeeds:' + id);
+
+        // get the current podcast data and change the field 'signed'
+        var currentPodcast = await AsyncStorage.getItem("@Podcasts:" + id);
+        currentPodcast = JSON.parse(currentPodcast);
+        currentPodcast.signed = false;
+
+        // update the podcast data
+        updateData('@Podcasts:' + id, currentPodcast);
+    }
 }
 
 function dispatchFetchFeed(dispatch, feedUrl, id, storage, filter) {
