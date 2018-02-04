@@ -17,10 +17,10 @@ export function fetchPodcastAndFeed(id) {
         axios.get('https://itunes.apple.com/lookup?id=' + id)
             .then(async (response) => {
                 // get the response data
-                var responsePodcast = response.data.results[0];
+                let responsePodcast = response.data.results[0];
 
                 // get the podcast from the storage
-                var podcastLocal = await AsyncStorage.getItem("@Podcasts:" + id);
+                let podcastLocal = await AsyncStorage.getItem("@Podcasts:" + id);
 
                 if(podcastLocal) {
                     // parse the string to json
@@ -29,7 +29,7 @@ export function fetchPodcastAndFeed(id) {
                     // check if the podcast was updated
                     if (podcastLocal.releaseDate === responsePodcast.releaseDate) {
                         // get the feed in the local storage
-                        var feedLocal = await AsyncStorage.getItem("@FeedMinimum:" + id)
+                        let feedLocal = await AsyncStorage.getItem("@FeedMinimum:" + id)
 
                         if (feedLocal) {
                             // parse the feed to json
@@ -105,7 +105,7 @@ export function signPodcast(id) {
         dispatch({type: 'SIGN'});
 
         // get the signeds podcasts from the storage
-        var signedPodcasts = await AsyncStorage.getItem('@SignedPodcasts');
+        let signedPodcasts = await AsyncStorage.getItem('@SignedPodcasts');
         
         if(signedPodcasts) {
             // add the new podcast id
@@ -121,7 +121,7 @@ export function signPodcast(id) {
         }
 
         // get the podcast signed and up the 'signed' field
-        var podcastData = await AsyncStorage.getItem('@Podcasts:' + id);
+        let podcastData = await AsyncStorage.getItem('@Podcasts:' + id);
         podcastData = JSON.parse(podcastData);
         podcastData.signed = true;
 
@@ -142,7 +142,7 @@ export function unsignPodcast(id) {
         dispatch({type: 'UNSIGN'});
 
         // remove the id from the list of signed podcasts
-        var signedPodcasts = await AsyncStorage.getItem('@SignedPodcasts');
+        let signedPodcasts = await AsyncStorage.getItem('@SignedPodcasts');
         signedPodcasts = JSON.parse(signedPodcasts);
         signedPodcasts.podcasts.splice(signedPodcasts.podcasts.indexOf(id), 1);
 
@@ -153,7 +153,7 @@ export function unsignPodcast(id) {
         await AsyncStorage.removeItem('@SignedFeeds:' + id);
 
         // get the current podcast data and change the field 'signed'
-        var currentPodcast = await AsyncStorage.getItem("@Podcasts:" + id);
+        let currentPodcast = await AsyncStorage.getItem("@Podcasts:" + id);
         currentPodcast = JSON.parse(currentPodcast);
         currentPodcast.signed = false;
 
@@ -168,7 +168,7 @@ function dispatchFetchFeed(dispatch, feedUrl, id, storage, filter) {
     axios.get(feedUrl)
         .then(async (response) => {
             // get the response xml and make a parse
-            var feed = xml2json(response.data);
+            let feed = xml2json(response.data);
 
             if(filter){
                 filter(feed);
