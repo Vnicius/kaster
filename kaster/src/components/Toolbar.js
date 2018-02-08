@@ -10,7 +10,7 @@ export default class Toolbar extends Component {
     return (
       <ToolbarAndroid
 				title={this.props.title ? this.props.title : ""}
-				style={styles.toolBar}
+				style={[styles.toolBar, this.props.style]}
 				titleColor="white"
     	>
 				<View style={{
